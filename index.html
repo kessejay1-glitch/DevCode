@@ -1,307 +1,340 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt">
 <head>
-
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-
-<title>Online Coding Workspace</title>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-
-<style>
-
-body{
-margin:0;
-background:#0d1117;
-color:#e6edf3;
-font-family:Segoe UI;
-display:flex;
-flex-direction:column;
-height:100vh;
-}
-
-header{
-height:55px;
-background:#161b22;
-display:flex;
-align-items:center;
-padding:0 20px;
-font-size:20px;
-border-bottom:1px solid #30363d;
-}
-
-#topbar{
-display:flex;
-gap:10px;
-padding:10px;
-background:#0d1117;
-border-bottom:1px solid #30363d;
-}
-
-button{
-background:#21262d;
-border:1px solid #30363d;
-color:white;
-padding:6px 12px;
-cursor:pointer;
-}
-
-button:hover{
-background:#30363d;
-}
-
-#fileTabs{
-display:flex;
-gap:3px;
-padding:5px;
-background:#161b22;
-border-bottom:1px solid #30363d;
-overflow-x:auto;
-}
-
-.tab{
-padding:6px 10px;
-background:#21262d;
-border:1px solid #30363d;
-cursor:pointer;
-display:flex;
-align-items:center;
-gap:6px;
-}
-
-.tab.active{
-background:#238636;
-}
-
-.tab span{
-cursor:pointer;
-color:#ff7b72;
-}
-
-#editor{
-flex:1;
-}
-
-#codeArea{
-width:100%;
-height:100%;
-background:#0d1117;
-color:#e6edf3;
-border:none;
-outline:none;
-resize:none;
-font-family:monospace;
-font-size:14px;
-padding:20px;
-}
-
-</style>
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <base href="/">
+    <title>Project Stud - O mundo dos jogos!</title>
+    <link rel="icon" href="imgs/logo.png" type="image/png">
+    <link rel="stylesheet" href="stylefront.css">
+    <link rel="stylesheet" href="modal-styles.css">
+    <script src="translations.js"></script>
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://unpkg.com/three@0.158.0/build/three.module.js",
+                "three/addons/": "https://unpkg.com/three@0.158.0/examples/jsm/"
+            }
+        }
+    </script>
 </head>
-
 <body>
-
-<header>
-Collaborative Coding Workspace
-</header>
-
-<div id="topbar">
-
-<button onclick="createFile()">New File</button>
-
-<button onclick="renameFile()">Rename File</button>
-
-<button onclick="downloadFile()">Download File</button>
-
-<button onclick="downloadProject()">Download Project ZIP</button>
-
-</div>
-
-<div id="fileTabs"></div>
-
-<div id="editor">
-
-<textarea id="codeArea"></textarea>
-
-</div>
-
-<script>
-
-let files={
-"index.html":"<!DOCTYPE html>\n<html>\n<head>\n<title>Project</title>\n</head>\n<body>\n\n</body>\n</html>"
-}
-
-let currentFile="index.html"
-
-
-function renderTabs(){
-
-let container=document.getElementById("fileTabs")
-
-container.innerHTML=""
-
-for(let name in files){
-
-let tab=document.createElement("div")
-
-tab.className="tab"
-
-if(name===currentFile){
-tab.classList.add("active")
-}
-
-tab.onclick=()=>openFile(name)
-
-let label=document.createElement("div")
-label.textContent=name
-
-let close=document.createElement("span")
-close.textContent="×"
-
-close.onclick=(e)=>{
-e.stopPropagation()
-delete files[name]
-
-let keys=Object.keys(files)
-
-currentFile=keys[0]||""
-
-if(currentFile){
-openFile(currentFile)
-}
-
-renderTabs()
-}
-
-tab.appendChild(label)
-tab.appendChild(close)
-
-container.appendChild(tab)
-
-}
-
-}
-
-
-function openFile(name){
-
-saveCurrent()
-
-currentFile=name
-
-document.getElementById("codeArea").value=files[name]
-
-renderTabs()
-
-}
-
-
-function saveCurrent(){
-
-files[currentFile]=document.getElementById("codeArea").value
-
-}
-
-
-function createFile(){
-
-let name=prompt("File name")
-
-if(!name) return
-
-if(files[name]){
-alert("File already exists")
-return
-}
-
-files[name]=""
-
-currentFile=name
-
-renderTabs()
-
-openFile(name)
-
-}
-
-
-function renameFile(){
-
-let newName=prompt("New file name",currentFile)
-
-if(!newName) return
-
-if(files[newName]){
-alert("File exists")
-return
-}
-
-files[newName]=files[currentFile]
-
-delete files[currentFile]
-
-currentFile=newName
-
-renderTabs()
-
-}
-
-
-function downloadFile(){
-
-saveCurrent()
-
-let blob=new Blob([files[currentFile]],{type:"text/plain"})
-
-let a=document.createElement("a")
-
-a.href=URL.createObjectURL(blob)
-
-a.download=currentFile
-
-a.click()
-
-}
-
-
-async function downloadProject(){
-
-saveCurrent()
-
-let zip=new JSZip()
-
-for(let name in files){
-
-zip.file(name,files[name])
-
-}
-
-let content=await zip.generateAsync({type:"blob"})
-
-let a=document.createElement("a")
-
-a.href=URL.createObjectURL(content)
-
-a.download="project.zip"
-
-a.click()
-
-}
-
-
-document.getElementById("codeArea").addEventListener("input",saveCurrent)
-
-
-window.onload=()=>{
-
-renderTabs()
-
-openFile("index.html")
-
-}
-
-</script>
-
-</body>
-</html>
+    <div class="container">
+        <header>
+            <img src="imgs/logo.png" alt="Project Stud Logo" class="logo-img">
+            <h1 class="logo">PROJECT STUD</h1>
+            <nav>
+                <ul class="menu">
+                    <li><a href="#" id="home-link" class="active">Home</a></li>
+                    <li><a href="#" id="games-link">Jogos</a></li>
+                    <li><a href="#" id="rewards-link" data-translate="rewards-link">Recompensas</a></li>
+                    <li><a href="#" id="catalog-link">Catálogo</a></li>
+                    <li><a href="#" id="studio-link">Studio</a></li>
+                    <li><a href="#" id="profile-link">Perfil</a></li>
+                    <li><a href="#" id="credits-link">Créditos</a></li>
+                </ul>
+            </nav>
+            <div class="language-selector">
+                <select id="language-select">
+                    <option value="pt">🇧🇷 PT</option>
+                    <option value="en">🇺🇸 EN</option>
+                    <option value="es">🇪🇸 ES</option>
+                </select>
+            </div>
+        </header>
+
+        <main>
+            <div class="banner">
+                <h2 data-translate="banner-title">Bem-vindo ao Project Stud - O mundo dos jogos!</h2>
+                <p data-translate="banner-description">Junte-se a milhões de jogadores e explore jogos incríveis feitos pela comunidade.</p>
+                <div class="alpha-banner" data-translate="alpha-banner">ALPHA RELEASE - Obrigado pelo apoio!</div>
+            </div>
+
+            <!-- Profile Section -->
+            <section id="profile-section" class="hidden">
+                <div class="profile-header">
+                    <button class="back-button" onclick="hideProfile()" data-translate="back">← Voltar</button>
+                    <div class="profile-avatar">
+                        <img id="profile-avatar-img" src="" alt="" class="hidden">
+                        <div id="avatar-placeholder" class="avatar-placeholder">
+                            <span>?</span>
+                        </div>
+                    </div>
+                    <div class="profile-info">
+                        <h2 id="profile-username">Usuário</h2>
+                        <p class="profile-status" data-translate="status-offline">Status: Offline</p>
+                        <p><span data-translate="member-since">Membro desde:</span> <span id="join-date">--/--/----</span></p>
+                    </div>
+                    <div class="profile-stats">
+                        <div class="stat-item">
+                            <span id="favorite-count" class="stat-number">0</span>
+                            <span class="stat-label" data-translate="favorites">Favoritos</span>
+                        </div>
+                        <div class="stat-item">
+                            <span id="profile-visits" class="stat-number">0</span>
+                            <span class="stat-label" data-translate="visits">Visitas</span>
+                        </div>
+                        <div class="stat-item">
+                            <span id="user-coins" class="stat-number coins-value">0</span>
+                            <span class="stat-label" data-translate="coins-label">GoldBucks</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="profile-content">
+                    <div class="profile-tabs">
+                        <button class="tab-button active" data-tab="about" data-translate="tab-about">Sobre</button>
+                        <button class="tab-button" data-tab="games" data-translate="tab-my-games">Meus Jogos</button>
+                        <button class="tab-button" data-tab="favorites" data-translate="tab-favorites">Favoritos</button>
+                        <button class="tab-button" data-tab="messages" data-translate="tab-messages">Mensagens</button>
+                    </div>
+
+                    <div class="tab-content">
+                        <div id="about-tab" class="tab-panel active">
+                            <h3 data-translate="about-me">Sobre Mim</h3>
+                            <div class="about-content">
+                                <p id="profile-bio">Este usuário ainda não escreveu uma descrição.</p>
+                                <button class="edit-button" onclick="editProfile()" data-translate="edit-profile">Editar Perfil</button>
+                            </div>
+                        </div>
+
+                        <div id="games-tab" class="tab-panel">
+                            <h3 data-translate="tab-my-games">Meus Jogos</h3>
+                            <div class="games-grid" id="user-games">
+                                <p class="empty-message" data-translate="no-games-created">Nenhum jogo criado ainda.</p>
+                            </div>
+                        </div>
+
+                        <div id="favorites-tab" class="tab-panel">
+                            <h3 data-translate="no-favorites-yet">Meus Jogos Favoritos</h3>
+                            <div class="games-grid" id="favorite-games-list">
+                                <p class="empty-message" data-translate="no-favorites-yet">Nenhum jogo favorito ainda.</p>
+                            </div>
+                        </div>
+
+                        <div id="messages-tab" class="tab-panel">
+                            <h3 data-translate="tab-messages">Mensagens</h3>
+                            <div class="messages-list" id="messages-container">
+                                <p class="empty-message" data-translate="no-messages">Nenhuma mensagem nova.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Catalog Section -->
+            <section id="catalog-section" class="hidden">
+                <div class="catalog-header">
+                    <button class="back-button" onclick="hideCatalog()" data-translate="catalog-back">← Voltar</button>
+                    <h2 data-translate="catalog-title">Catálogo Project Stud</h2>
+                    <div class="user-roblox-account-info">
+                        <img src="imgs/roglux_coins.png" alt="Coins" class="coins-icon">
+                        <span id="current-catalog-coins">0</span>
+                    </div>
+                </div>
+
+                <div class="catalog-content">
+                    <div class="catalog-items">
+                        <div class="catalog-categories">
+                            <button class="category-button active" data-category="all" data-translate="all-items">Todos</button>
+                            <button class="category-button" data-category="hat" data-translate="hats">Chapéus</button>
+                            <button class="category-button" data-category="face" data-translate="faces">Rostos</button>
+                            <button class="category-button" data-category="gear" data-translate="gears">Ferramentas</button>
+                        </div>
+                        <div class="items-grid" id="catalog-items-grid">
+                            <!-- Items will be rendered here by JavaScript -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Item Detail Section -->
+            <section id="item-detail-section" class="hidden">
+                <div class="item-detail-header">
+                    <button class="back-button" onclick="hideItemDetail()" data-translate="catalog-back">← Voltar ao Catálogo</button>
+                    <h2 id="item-detail-title"></h2>
+                </div>
+
+                <div class="item-detail-content">
+                    <div class="item-detail-image">
+                        <img id="item-detail-img" src="" alt="Item Image">
+                    </div>
+                    <div class="item-detail-info">
+                        <div class="item-description" id="item-detail-description"></div>
+                        <div class="item-stats">
+                            <div class="stat-item">
+                                <span class="stat-number" id="item-purchase-count">0</span>
+                                <span class="stat-label" data-translate="purchased">Compras</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-number" id="item-detail-price">0</span>
+                                <span class="stat-label" data-translate="price">GoldBucks</span>
+                            </div>
+                        </div>
+                        <div class="item-detail-actions" id="item-detail-actions">
+                            <!-- Buttons will be added here by JavaScript -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Rewards Section -->
+            <section id="rewards-section" class="hidden">
+                <div class="rewards-header">
+                    <button class="back-button" onclick="hideRewardsSection()" data-translate="back">← Voltar</button>
+                    <h2 data-translate="rewards-title">Recompensas</h2>
+                </div>
+                <div class="rewards-content">
+                    <div class="rewards-info">
+                        <p data-translate="rewards-description">Ganhe Goldbucks curtindo jogos e criando seus próprios jogos!</p>
+                    </div>
+                    <div class="rewards-grid">
+                        <div class="reward-card">
+                            <div class="reward-icon">👍</div>
+                            <h4 data-translate="reward-like-title">Curtir Jogos</h4>
+                            <p data-translate="reward-like-desc">Ganhe 50 Goldbucks por cada jogo que você curtir pela primeira vez!</p>
+                            <div class="reward-status">
+                                <span id="rewards-earned">0</span> / <span id="rewards-total">0</span> <span data-translate="rewards-earned-text">ganhos</span>
+                            </div>
+                        </div>
+                        <div class="reward-card">
+                            <div class="reward-icon">🎮</div>
+                            <h4 data-translate="reward-create-title">Criar Jogos</h4>
+                            <p data-translate="reward-create-desc">Ganhe 200 Goldbucks por cada jogo que você criar!</p>
+                            <div class="reward-status">
+                                <span id="games-created-count">0</span> <span data-translate="games-created-text">jogos criados</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="featured-games" id="featured-games">
+                 <h3 data-translate="featured-games">Jogos em Destaque</h3>
+                 <div class="games-categories">
+                     <button class="category-button active" data-category="all" data-translate="all">Todos</button>
+                     <button class="category-button" data-category="most-liked" data-translate="most-liked">Mais Curtidos</button>
+                 </div>
+                 <div class="games-grid" id="games-grid">
+                    <!-- Published games will be added here dynamically -->
+                </div>
+            </section>
+
+            <!-- Game Detail Section -->
+            <section id="game-detail-section" class="hidden">
+                <div class="game-detail-header">
+                    <button class="back-button" onclick="hideGameDetail()" data-translate="game-back">← Voltar aos Jogos</button>
+                    <h2 id="game-detail-title" data-translate="game-details">Detalhes do Jogo</h2>
+                </div>
+
+                <div class="game-detail-content">
+                    <div class="game-detail-image">
+                        <img id="game-detail-thumbnail" src="" alt="Game Thumbnail">
+                    </div>
+                    <div class="game-detail-info">
+                        <div class="game-description" id="game-detail-description" data-translate="no-description">No description available.</div>
+                        <div><span data-translate="created-by-label">Criado por:</span> <span id="game-detail-creator">Unknown</span></div>
+                        <div><span data-translate="created-date-label">Criado em:</span> <span id="game-detail-created-date">Unknown</span></div>
+                        <div><span data-translate="tools-allowed">Ferramentas permitidas:</span> <span id="game-detail-tools-allowed">Sim</span></div>
+                        <div class="game-detail-actions">
+                            <button class="like-button" id="game-detail-like-btn" data-translate="like">Like</button>
+                            <button class="dislike-button" id="game-detail-dislike-btn" data-translate="dislike">Dislike</button>
+                            <button class="play-button" id="game-detail-play-btn" data-translate="play-now">Jogar Agora</button>
+                            <button class="download-button" id="game-detail-download-btn" data-translate="download-json">Download JSON</button>
+                            <span id="uncopylocked-info" data-translate="uncopylocked-info" style="color: #888; font-size: 12px; margin-left: 8px; display: none;">This game is uncopylocked! You can download it.</span>
+                        </div>
+                        <div class="game-stats">
+                            <div class="stat-item">
+                                <span class="stat-number" id="game-detail-likes">0</span>
+                                <span class="stat-label" data-translate="likes">Curtidas</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-number" id="game-detail-dislikes">0</span>
+                                <span class="stat-label" data-translate="dislikes">Não Curtidas</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-number" id="game-detail-playing">0</span>
+                                <span class="stat-label" data-translate="playing">Jogando</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-number" id="game-detail-visits">0</span>
+                                <span class="stat-label" data-translate="visits">Visitas</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Creation Board Section -->
+            <section id="creation-board-section" class="hidden">
+                <div class="creation-board-header">
+                    <button class="back-button" onclick="hideCreationBoard()" data-translate="back">← Voltar</button>
+                    <h2 data-translate="my-creation-studio">Meu Estúdio de Criação</h2>
+                    <div class="creation-actions">
+                        <button class="secondary-button" onclick="showDocumentation()" data-translate="documentation">Documentação</button>
+                        <button class="primary-button" onclick="createNewGame()" data-translate="create-new-game">Criar Novo Jogo</button>
+                    </div>
+                </div>
+
+                <div class="creation-board-content">
+                    <div class="creation-games-grid" id="creation-games-grid">
+                        <p class="empty-message" data-translate="no-games-yet">Nenhum jogo criado ainda. Clique em "Criar Novo Jogo" para começar!</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Remove modals and replace with inline forms -->
+            <section id="login-section" class="auth-section hidden">
+                <div class="auth-container">
+                    <h3 data-translate="login-title">Entre na sua conta Project Stud</h3>
+                    <form id="login-form-inline">
+                        <div class="form-group">
+                            <label data-translate="username-label">Usuário:</label>
+                            <input type="text" id="username-inline" required>
+                        </div>
+                        <div class="form-group">
+                            <label data-translate="password-label">Senha:</label>
+                            <input type="password" id="password-inline" required>
+                        </div>
+                        <div class="form-actions">
+                            <button type="submit" class="primary-button" data-translate="login-button">Entrar</button>
+                            <button type="button" id="switch-to-register-inline" class="secondary-button" data-translate="create-account">Criar Conta</button>
+                        </div>
+                    </form>
+                </div>
+            </section>
+
+            <section id="register-section" class="auth-section hidden">
+                <div class="auth-container">
+                    <h3 data-translate="register-title">Criar conta Project Stud</h3>
+                    <form id="register-form-inline">
+                        <div class="form-group">
+                            <label data-translate="username-label">Usuário:</label>
+                            <input type="text" id="reg-username-inline" required>
+                        </div>
+                        <div class="form-group">
+                            <label data-translate="password-label">Senha:</label>
+                            <input type="password" id="reg-password-inline" required>
+                        </div>
+                        <div class="form-group">
+                            <label data-translate="confirm-password">Confirmar Senha:</label>
+                            <input type="password" id="reg-confirm-password-inline" required>
+                        </div>
+                        <div class="form-actions">
+                            <button type="submit" class="primary-button" data-translate="create-account">Criar Conta</button>
+                            <button type="button" id="switch-to-login-inline" class="secondary-button" data-translate="already-have-account">Já tenho conta</button>
+                        </div>
+                    </form>
+                </div>
+            </section>
+
+            <section id="settings-section" class="auth-section hidden">
+                <div class="auth-container">
+                    <h3 data-translate="settings-title">Configurações da Conta</h3>
+                    <form id="settings-form-inline">
+                        <div class="form-group">
+                            <label data-translate="current-username">Usuário Atual:</label>
+                            <input type="text" id="current-username-inline" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label data-translate="new-username">Novo
